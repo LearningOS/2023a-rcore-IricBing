@@ -158,6 +158,12 @@ impl TaskManager {
             time_now - tcb.start_time,
         )
     }
+    
+    fn add_syscall_time(&self, syscall_id: usize) {
+        let mut inner = self.inner.exclusive_access();
+        let current = inner.current_task;
+        inner.tasks[current].syscall_times[syscall_id] += 1;
+    }
 }
 
 /// Run the first task in task list.
@@ -196,4 +202,9 @@ pub fn exit_current_and_run_next() {
 /// 获取当前task信息
 pub fn get_current_task_info() -> (TaskStatus, [u32; MAX_SYSCALL_NUM], usize) {
     TASK_MANAGER.get_current_task_info()
+}
+
+/// Add syscall times
+pub fn add_syscall_time(syscall_id: usize) {
+    TASK_MANAGER.add_syscall_time(syscall_id)
 }
